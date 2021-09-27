@@ -6,6 +6,8 @@ import java.awt.Color;
 import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.GridLayout;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -14,7 +16,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
 
-public class CustomerMain extends JFrame {
+public class CustomerMain extends JFrame implements MouseListener {
 	JPanel groundPane;
 	public CustomerMain() {
 		setTitle("학생식당 클라이언트 주문페이지");
@@ -34,26 +36,22 @@ public class CustomerMain extends JFrame {
 		groundPane.add(tabPane);
 		tabPane.setBounds(20,20,700,620);
 		tabPane.setBackground(new Color(255,255,255,100));
-		
-		
-		
 		tabPane.setFont(new Font("나눔고딕",Font.BOLD,25));
 		//tabPane.setLayout(null);
 		
 		//배열로 이미지추가
 		ImageIcon[] menu=new ImageIcon[5];
-		menu[0]=new ImageIcon("images/베트남볶음면.jpg");
-		menu[1]=new ImageIcon("images/소고기쌀국수.jpg");
-		menu[2]=new ImageIcon("images/얼큰쌀국수.jpg");
-		menu[3]=new ImageIcon("images/우더미쌀국수.jpg");
-		menu[4]=new ImageIcon("images/파인애플볶음밥.jpg");
+		String[] vMenus= {"베트남볶음면","소고기쌀국수","얼큰쌀국수","우더미쌀국수","파인애플볶음밥"};
 		
-		String[] names= {"베트남 볶음면","소고기 쌀국수","얼큰 쌀국수","우더미 쌀국수","파인애플 볶음밥"};
+		for(int i=0;i<menu.length;i++) {
+			menu[i]=new ImageIcon("images/"+vMenus[i]+".jpg");
+		}
 		
 		//쌀국수탭
 		JPanel vietnamNoodle=new JPanel();
 		vietnamNoodle.setLayout(new GridLayout(0,3,3,3));
 		
+
 		JPanel vNoodle_01=new JPanel();
 		vietnamNoodle.add(vNoodle_01);
 		JLabel imageLabel=new JLabel();
@@ -61,7 +59,7 @@ public class CustomerMain extends JFrame {
 		vNoodle_01.add(imageLabel,BorderLayout.NORTH);
 		JButton btnAdd=new JButton("담기");
 		vNoodle_01.add(btnAdd,BorderLayout.SOUTH);
-		vNoodle_01.add(new JButton("★(3.8)"),BorderLayout.SOUTH);
+		vNoodle_01.add(new JButton("♥(45)"),BorderLayout.SOUTH);
 		vNoodle_01.setBackground(Color.black);
 		
 		JPanel vNoodle_02=new JPanel();
@@ -72,12 +70,16 @@ public class CustomerMain extends JFrame {
 		vNoodle_02.setSize(300,200);
 		JButton btnAdd2=new JButton("담기");
 		vNoodle_02.add(btnAdd2,BorderLayout.SOUTH);
-		vNoodle_02.add(new JButton("★(3.8)"),BorderLayout.SOUTH);
+		vNoodle_02.add(new JButton("♥(45)"),BorderLayout.SOUTH);
 		vNoodle_02.setBackground(Color.yellow);
 		
 		JPanel vNoodle_03=new JPanel();
 		vietnamNoodle.add(vNoodle_03);
 		vNoodle_03.setBackground(Color.red);
+		
+		JPanel vNoodle_04=new JPanel();
+		vietnamNoodle.add(vNoodle_04);
+		vNoodle_04.setBackground(Color.green);
 		
 		tabPane.addTab("베트남 골목식당", vietnamNoodle);
 		
@@ -101,12 +103,63 @@ public class CustomerMain extends JFrame {
 		next1.setFont(new Font("나눔고딕",Font.BOLD,50));
 		next1.setBounds(730,470,240,170);
 		next1.setBackground(new Color(255,255,255,250));
+		next1.addMouseListener(this);
 		
 		
 		setVisible(true);
+		
+		
 	}
+	
+	
+	
 	
 	public static void main(String args[]) {
 		CustomerMain frame=new CustomerMain();
+	}
+
+
+
+
+	@Override
+	public void mouseClicked(MouseEvent e) {
+		new Order();
+		this.setVisible(false);
+	}
+
+
+
+
+	@Override
+	public void mousePressed(MouseEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+
+
+
+	@Override
+	public void mouseReleased(MouseEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+
+
+
+	@Override
+	public void mouseEntered(MouseEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+
+
+
+	@Override
+	public void mouseExited(MouseEvent e) {
+		// TODO Auto-generated method stub
+		
 	}
 }
