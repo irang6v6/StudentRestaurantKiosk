@@ -28,7 +28,7 @@ import javax.swing.table.DefaultTableModel;
 public class CustomerMain extends JFrame {
 	JPanel groundPane;
 	JButton next1;
-	int orderNum=1;
+	int orderNum=0;
 	MyTableModel model;
 	public CustomerMain() {
 		setTitle("학생식당 클라이언트 주문페이지");
@@ -100,7 +100,27 @@ public class CustomerMain extends JFrame {
 		imageLabel2.setIcon(menu[1]);
 		vNoodle_02.add(imageLabel2,BorderLayout.NORTH);
 		vNoodle_02.setSize(300,200);
-		JButton btnAdd2=new JButton("담기");
+		JButton btnAdd2=new JButton( new AbstractAction("담기") {
+	        @Override
+	        public void actionPerformed( ActionEvent e ) {
+	        	int id=2;
+	            String name="베트남쌀국수";
+	            int price=3000;
+	            orderNum+=1;
+	            String restaurant="골목식당";
+	            
+	            try {
+	            	Connection conn=makeConnection();
+	            	Statement stmt=conn.createStatement();
+	            	stmt.executeUpdate("INSERT INTO ordersheet VALUES ("+id+","+orderNum+",'"+name+"',"+price+",'"+restaurant+"')");
+	            	
+	            	conn.close();
+	            }catch(SQLException ex) {
+	            	System.err.println("Caught Exception: "+ex.getMessage());
+	            }
+	            model.fillTable();
+	        }
+	    });
 		vNoodle_02.add(btnAdd2,BorderLayout.SOUTH);
 		vNoodle_02.add(new JButton("♥(45)"),BorderLayout.SOUTH);
 		vNoodle_02.setBackground(new Color(255,255,255,100));
@@ -127,7 +147,11 @@ public class CustomerMain extends JFrame {
 		model=new MyTableModel();
 		model.fillTable();
 		JTable table = new JTable(model);
-		table.getColumnModel().getColumn(0).setPreferredWidth(200);
+		table.getColumnModel().getColumn(0).setPreferredWidth(30);
+		table.getColumnModel().getColumn(2).setPreferredWidth(30);
+		table.getColumnModel().getColumn(3).setPreferredWidth(50);
+
+
 
 		JPanel tablePanel = new JPanel();
 		tablePanel.setBounds(730,20,240,440);
@@ -166,7 +190,7 @@ public class CustomerMain extends JFrame {
 	}
 	
 	public class MyTableModel extends AbstractTableModel{
-		private String[] columnNames= {"주문"+"상품명","가격","주문처"};
+		private String[] columnNames= {"주문","상품명","가격","주문처"};
 		private static final int ROWS=10;
 		private static final int COLS=4;
 		Object[][] data=new String[ROWS][COLS];
@@ -193,9 +217,9 @@ public class CustomerMain extends JFrame {
 				
 				int row=0;
 				while(rs.next()) {
-					data[row][0]=rs.getInt("orderNum");
+					data[row][0]=rs.getString("orderNum");
 					data[row][1]=rs.getString("name");
-					data[row][2]=rs.getInt("price");
+					data[row][2]=rs.getString("price");
 					data[row][3]=rs.getString("restaurant");
 					row++;
 				}conn.close();
