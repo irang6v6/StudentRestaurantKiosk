@@ -32,7 +32,7 @@ public class CustomerMain extends JFrame {
 	MyTableModel model;
 	JTable table;
 	int sum1=0;
-	int likes=0;
+	int likes=14;
 	public CustomerMain() {
 		setTitle("학생식당 클라이언트 주문페이지");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
