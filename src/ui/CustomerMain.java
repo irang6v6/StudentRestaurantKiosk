@@ -31,8 +31,14 @@ public class CustomerMain extends JFrame {
 	int orderNum=0;
 	MyTableModel model;
 	JTable table;
+	JLabel sum;
 	int sum1=0;
-	int likes=14;
+	int clicked=70;
+	int clicked02=15;
+	int clicked03=0;
+	int clicked04=46;
+	int clicked05=5;
+	int clicked06=10;
 	public CustomerMain() {
 		setTitle("학생식당 클라이언트 주문페이지");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -53,10 +59,24 @@ public class CustomerMain extends JFrame {
 		tabPane.setBackground(new Color(255,255,255,100));
 		tabPane.setFont(new Font("나눔고딕",Font.BOLD,25));
 		//tabPane.setLayout(null);
+		
+		
+		//합계 계산
+//		for (int index = 0; index < table.getRowCount(); index++) {
+//			if(table.getValueAt(index, 2)!=null) {
+//			sum1 += Integer.valueOf((String)table.getValueAt(index, 2));
+//		}}
+		
+		JLabel sum=new JLabel("합계:"+sum1+"원");
+		sum.setBounds(730,400,200,70);
+		sum.setFont(new Font("나눔고딕",Font.BOLD,30));
+		
+		groundPane.add(sum);
+
 
 		//배열로 이미지추가
 		ImageIcon[] menu=new ImageIcon[5];
-		String[] vMenus= {"베트남볶음면","소고기쌀국수","얼큰쌀국수","우더미쌀국수","파인애플볶음밥"};
+		String[] vMenus= {"베트남볶음면","소고기쌀국수","얼큰쌀국수","우더미쌀국수","파인애플볶음밥","생면국수3","왕돈까스"};
 
 		for(int i=0;i<menu.length;i++) {
 			menu[i]=new ImageIcon("images/"+vMenus[i]+".jpg");
@@ -72,6 +92,8 @@ public class CustomerMain extends JFrame {
 		JLabel imageLabel=new JLabel();
 		imageLabel.setIcon(menu[0]);
 		vNoodle_01.add(imageLabel,BorderLayout.NORTH);
+		
+		//담기
 		JButton btnAdd=new JButton( new AbstractAction("담기") {
 	        @Override
 	        public void actionPerformed( ActionEvent e ) {
@@ -80,12 +102,14 @@ public class CustomerMain extends JFrame {
 	            int price=4500;
 	            orderNum+=1;
 	            String restaurant="골목식당";
+	            sum1+=4500;
+	            sum.setText("합계: "+sum1+"원");
 	            
 	            try {
 	            	Connection conn=makeConnection();
 	            	Statement stmt=conn.createStatement();
 	            	stmt.executeUpdate("INSERT INTO ordersheet VALUES ("+id+","+orderNum+",'"+name+"',"+price+",'"+restaurant+"')");
-	            	sum1+=4500;
+	            	
 	            	
 	            	conn.close();
 	            }catch(SQLException ex) {
@@ -95,30 +119,46 @@ public class CustomerMain extends JFrame {
 	        }
 	    });
 		vNoodle_01.add(btnAdd,BorderLayout.SOUTH);
-		vNoodle_01.add(new JButton("♥(17)"),BorderLayout.SOUTH);
+		
+		//좋아요
+		final JButton likes01 = new JButton("♥("+clicked+")");
+        likes01.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent ae) {
+            	clicked++;
+            	likes01.setText("♥("+clicked+")");
+            }
+        });
+        likes01.setSize(100,50);
+        likes01.setFont(new Font("나눔고딕",Font.BOLD,15));
+		vNoodle_01.add(likes01,BorderLayout.SOUTH);
 		vNoodle_01.setBackground(new Color(255,255,255,100));
+		
+		
 
-		JPanel vNoodle_02=new JPanel();
+	    JPanel vNoodle_02=new JPanel();
 		vietnamNoodle.add(vNoodle_02);
-		JLabel imageLabel2=new JLabel();
-		imageLabel2.setIcon(menu[1]);
-		vNoodle_02.add(imageLabel2,BorderLayout.NORTH);
-		vNoodle_02.setSize(300,200);
-		JButton btnAdd2=new JButton( new AbstractAction("담기") {
+		JLabel imageLabel02=new JLabel();
+		imageLabel02.setIcon(menu[1]);
+		vNoodle_02.add(imageLabel02,BorderLayout.NORTH);
+		
+		//담기
+		JButton btnAdd02=new JButton( new AbstractAction("담기") {
 	        @Override
 	        public void actionPerformed( ActionEvent e ) {
 	        	int id=2;
-	            String name="베트남쌀국수";
+	            String name="소고기쌀국수";
 	            int price=3000;
 	            orderNum+=1;
 	            String restaurant="골목식당";
+	            sum1+=3000;
+	            sum.setText("합계: "+sum1+"원");
 	            
 	            try {
 	            	Connection conn=makeConnection();
 	            	Statement stmt=conn.createStatement();
 	            	stmt.executeUpdate("INSERT INTO ordersheet VALUES ("+id+","+orderNum+",'"+name+"',"+price+",'"+restaurant+"')");
 	            	
-	            	sum1+=3000;
+	            	
 	            	conn.close();
 	            }catch(SQLException ex) {
 	            	System.err.println("Caught Exception: "+ex.getMessage());
@@ -126,40 +166,68 @@ public class CustomerMain extends JFrame {
 	            model.fillTable();
 	        }
 	    });
-		vNoodle_02.add(btnAdd2,BorderLayout.SOUTH);
-		vNoodle_02.add(new JButton("♥(45)"),BorderLayout.SOUTH);
+		vNoodle_02.add(btnAdd02,BorderLayout.SOUTH);
+		
+		//좋아요
+		final JButton likes02 = new JButton("♥("+clicked02+")");
+	    likes02.addActionListener(new ActionListener() {
+	        public void actionPerformed(ActionEvent ae) {
+	        	clicked02++;
+	        	likes02.setText("♥("+clicked02+")");
+	        }
+	    });
+	    likes02.setSize(100,50);
+	    likes02.setFont(new Font("나눔고딕",Font.BOLD,15));
+		vNoodle_02.add(likes02,BorderLayout.SOUTH);
 		vNoodle_02.setBackground(new Color(255,255,255,100));
+	    
+	
 
-		JPanel vNoodle_03=new JPanel();
-		vietnamNoodle.add(vNoodle_03);
-		JLabel imageLabel3=new JLabel();
-		imageLabel3.setIcon(menu[2]);
-		vNoodle_03.add(imageLabel3,BorderLayout.NORTH);
-		vNoodle_03.setSize(300,200);
-		JButton btnAdd3=new JButton( new AbstractAction("담기") {
-	        @Override
-	        public void actionPerformed( ActionEvent e ) {
-	        	int id=3;
-	            String name="얼큰쌀국수";
-	            int price=6500;
-	            orderNum+=1;
-	            String restaurant="골목식당";
-	            
-	            try {
-	            	Connection conn=makeConnection();
-	            	Statement stmt=conn.createStatement();
-	            	stmt.executeUpdate("INSERT INTO ordersheet VALUES ("+id+","+orderNum+",'"+name+"',"+price+",'"+restaurant+"')");
-	            	
-	            	conn.close();
-	            }catch(SQLException ex) {
-	            	System.err.println("Caught Exception: "+ex.getMessage());
-	            }
-	            model.fillTable();
-	        }
-	    });
-		vNoodle_03.add(btnAdd3,BorderLayout.SOUTH);
-		vNoodle_03.add(new JButton("♥(12)"),BorderLayout.SOUTH);
-		vNoodle_03.setBackground(new Color(255,255,255,100));
+		 JPanel vNoodle_03=new JPanel();
+			vietnamNoodle.add(vNoodle_03);
+			JLabel imageLabel03=new JLabel();
+			imageLabel03.setIcon(menu[2]);
+			vNoodle_03.add(imageLabel03,BorderLayout.NORTH);
+			
+			//담기
+			JButton btnAdd03=new JButton( new AbstractAction("담기") {
+		        @Override
+		        public void actionPerformed( ActionEvent e ) {
+		        	int id=3;
+		            String name="얼큰쌀국수";
+		            int price=6500;
+		            orderNum+=1;
+		            String restaurant="골목식당";
+		            sum1+=6500;
+		            sum.setText("합계: "+sum1+"원");
+		            
+		            try {
+		            	Connection conn=makeConnection();
+		            	Statement stmt=conn.createStatement();
+		            	stmt.executeUpdate("INSERT INTO ordersheet VALUES ("+id+","+orderNum+",'"+name+"',"+price+",'"+restaurant+"')");
+		            	
+		            	
+		            	conn.close();
+		            }catch(SQLException ex) {
+		            	System.err.println("Caught Exception: "+ex.getMessage());
+		            }
+		            model.fillTable();
+		        }
+		    });
+			vNoodle_03.add(btnAdd03,BorderLayout.SOUTH);
+			
+			//좋아요
+			final JButton likes03 = new JButton("♥("+clicked03+")");
+		    likes03.addActionListener(new ActionListener() {
+		        public void actionPerformed(ActionEvent ae) {
+		        	clicked03++;
+		        	likes03.setText("♥("+clicked03+")");
+		        }
+		    });
+		    likes03.setSize(100,50);
+		    likes03.setFont(new Font("나눔고딕",Font.BOLD,15));
+			vNoodle_03.add(likes03,BorderLayout.SOUTH);
+			vNoodle_03.setBackground(new Color(255,255,255,100));
 
 		JPanel vNoodle_04=new JPanel();
 		vietnamNoodle.add(vNoodle_04);
@@ -175,6 +243,8 @@ public class CustomerMain extends JFrame {
 	            int price=6500;
 	            orderNum+=1;
 	            String restaurant="골목식당";
+	            sum1+=6500;
+	            sum.setText("합계: "+sum1+"원");
 	            
 	            try {
 	            	Connection conn=makeConnection();
@@ -204,6 +274,7 @@ public class CustomerMain extends JFrame {
 		//장바구니
 
 		model=new MyTableModel();
+		model.cleanTable();
 		model.fillTable();
 		JTable table = new JTable(model);
 		table.getColumnModel().getColumn(0).setPreferredWidth(5);
@@ -229,21 +300,6 @@ public class CustomerMain extends JFrame {
 		tablePanel.setBackground(new Color(255,255,255,100));
 
 
-		//합계 계산
-		
-		int sum1 = 0;
-		
-		
-		for (int index = 0; index < table.getRowCount(); index++) {
-			if(table.getValueAt(index, 2)!=null) {
-			sum1 += Integer.valueOf((String)table.getValueAt(index, 2));
-		}}
-		
-		JLabel sum=new JLabel("합계:"+sum1+"원");
-		sum.setBounds(730,400,200,70);
-		sum.setFont(new Font("나눔고딕",Font.BOLD,30));
-		
-		groundPane.add(sum);
 
 		//다음단계 버튼
 		JButton next1=new JButton( new AbstractAction("결제") {
@@ -285,6 +341,17 @@ public class CustomerMain extends JFrame {
 		@Override
 		public String getColumnName(int col) {
 			return columnNames[col].toString();
+		}
+		
+		public void cleanTable() {
+			try {
+				Connection conn=makeConnection();
+				Statement stmt=conn.createStatement();
+				int rs=stmt.executeUpdate("TRUNCATE menu1.ordersheet");
+			}catch(SQLException e) {
+				System.err.println("Caught Exception:"+e.getMessage());
+			}
+			fireTableDataChanged();
 		}
 		
 		public void fillTable() {
