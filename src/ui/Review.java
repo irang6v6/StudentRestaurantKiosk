@@ -1,33 +1,364 @@
 package ui;
 
+import java.awt.BorderLayout;
+import java.awt.Container;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.sql.Connection;
 import java.sql.DriverManager;
-import java.sql.SQLException;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.Statement;
+import java.util.Vector;
 
-public class Review {
-	
-	
-	
-	//db 연결
-		public static Connection makeConnection() {
-			String url="jdbc:mysql://localhost/menu1";
-			String id="root";
-			String password="rhksflwk123!";
-			Connection con=null;
-			try {
-				Class.forName("com.mysql.cj.jdbc.Driver");
-				System.out.println("드라이버 적재 성공");
-				con=DriverManager.getConnection(url,id,password);
-				System.out.println("데이터베이스 연결 성공");
-			}catch (ClassNotFoundException e) {
-				System.out.println("드라이버를 찾을 수 없습니다");
-			}catch (SQLException e) {
-				System.out.println("연결에 실패하였습니다.");
-			}return con;
-		}
-		
-		public static void main(String[] args) {
-			Review review=new Review();
-		}
+import javax.swing.ButtonGroup;
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JRadioButton;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
+import javax.swing.JTextField;
+import javax.swing.table.DefaultTableModel;
 
+public class Review extends JFrame {
+
+	private static final long serialVersionUID = 1L;
+
+	@SuppressWarnings("rawtypes")
+
+	private Vector data = null;
+
+	@SuppressWarnings("rawtypes")
+
+	private Vector title = null;
+	private JTable table = null;
+	private DefaultTableModel model = null;
+	private JButton btnAdd = null;
+	private JButton btnClear = null;
+	private JTextField tfReviewId = null;
+	private JTextField tfMenuId = null;
+	private JTextField tfReview = null;
+	private JLabel lblReviewId = null;
+	private JLabel lblMenuId = null;
+	private JLabel lblReview = null;
+	private String Url = "jdbc:mysql://localhost/menu1"; // URL 정보 저장 변수
+	private String user = "root"; // user 정보 저장 변수 -> hr
+	private String password = "rhksflwk123!"; // password 정보 저장 변수 -> hr
+	private Connection conn = null;
+	private Statement stmt = null;
+	private PreparedStatement pstmtAdd = null;
+	private PreparedStatement pstmtDel = null;
+	private PreparedStatement pstmtUpdate = null;
+
+	public Review() {
+		{
+
+			setTitle("리뷰");
+			setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+			setResizable(false);
+
+			preDbTreatment();
+
+			// 테이블에 표시될 데이터 벡터 생성
+
+			data = new Vector<>();
+
+			// 테이블에 표시될 타이틀 벡터 생성, 초기화
+
+			title = new Vector<>();
+
+			title.add("번호");
+
+			title.add("메뉴");
+
+			title.add("리뷰");
+			title.add("추천");
+
+			// 테이블에 표시될 모델 객체 생성
+
+			model = new DefaultTableModel();
+
+			Vector result = selectAll();
+
+			// 모델에 변경된 데이터(result)를 새로 적용
+
+			model.setDataVector(result, title);
+
+			// 모델을 통해 테이블 생성
+
+			table = new JTable(model);
+
+			// 테이블에 스크롤팬 생성
+
+			JScrollPane sp = new JScrollPane(table);
+
+			JPanel panel = new JPanel();
+
+			// 값을 입력받거나 표시할 텍스트필드(번호, 이름, 주소) 생성
+
+			tfReviewId = new JTextField(8);
+
+			tfMenuId = new JTextField(10);
+
+			tfReview = new JTextField(20);
+
+			// 레이블 생성
+
+			lblReviewId = new JLabel("번호");
+
+			lblMenuId = new JLabel("메뉴");
+
+			lblReview = new JLabel("리뷰");
+
+			// 버튼(추가, 삭제, 수정, 초기화) 생성
+
+			btnAdd = new JButton("추가");
+
+			btnClear = new JButton("닫기");
+
+			btnAdd.addActionListener(new ActionListener() {
+
+				// actionPerformed(ActionEvent e) : 추가 버튼 클릭시 호출될 메소드
+
+				// 추가버튼을 클릭하면 처리할 내용 작성
+
+				@Override
+
+				public void actionPerformed(ActionEvent e) {
+
+					// 현재 텍스트 필드에 있는 값을 각각의 변수에 대입
+
+					String reviewId = tfReviewId.getText(); // 번호
+
+					String menuId = tfMenuId.getText(); // 이름
+
+					String review = tfReview.getText(); // 주소
+
+					// 각각의 변수에 저장된 값을 데이터베이스에 Insert하는 메소드
+
+					insert(reviewId, menuId, review);
+
+					// 신규 저장된 데이터를 데이터베이스에서 다시 읽어와서 result 벡터에 저장
+
+					Vector result = selectAll();
+
+					// 변경된 데이터(벡터)로 모델 갱신 -> 테이블 표시 갱신됨
+
+					model.setDataVector(result, title);
+
+				}
+
+			});
+
+			// 초기화 버튼 이벤트(클릭시) 처리 -> 텍스트필드 초기화, 번호텍스트필드에 커서 위치
+
+			btnClear.addActionListener(new ActionListener() {
+
+				@Override
+
+				public void actionPerformed(ActionEvent e) {
+
+					dispose();
+				}
+
+			});
+
+			// 패널에 각각의 레이블과 텍스트필드 추가
+
+			panel.add(lblReviewId);
+
+			panel.add(tfReviewId);
+
+			panel.add(lblMenuId);
+
+			panel.add(tfMenuId);
+
+			panel.add(lblReview);
+
+			panel.add(tfReview);
+
+			JRadioButton rb1 = new JRadioButton("강추");
+			JRadioButton rb2 = new JRadioButton("비추");
+
+			ButtonGroup bg = new ButtonGroup();
+			bg.add(rb1);
+			bg.add(rb2);
+
+			panel.add(rb1);
+			panel.add(rb2);
+
+			// 패널에 버튼 추가
+
+			panel.add(btnAdd);
+
+			panel.add(btnClear);
+
+			// Frame의 ContentPane 컨테이너 가지오기
+
+			Container c = getContentPane();
+
+			// 컨테이너에 테이블, 패널(텍스트필드, 번트이 포함된 패널) 추가
+
+			c.add(new JLabel("리뷰", JLabel.CENTER), "North");
+
+			c.add(sp, BorderLayout.CENTER);
+
+			c.add(panel, BorderLayout.SOUTH);
+
+			// 프레임 종료시 처리될 이벤트 처리
+
+			addWindowListener(new WindowAdapter() {
+
+				@Override
+
+				public void windowClosing(WindowEvent w) {
+
+					try {
+
+						stmt.close(); // Statement 객체 닫기
+
+						conn.close(); // Connection 객체 닫기
+
+						setVisible(false); // 화면 닫기
+
+						dispose(); // 자원 반납
+
+						System.exit(0); // 종료 처리
+
+					} catch (Exception e) {
+
+					}
+				}
+			});
+			setSize(900, 500);
+			setVisible(true);
+		}
+	}
+
+
+	private Vector selectAll() {
+
+		data.clear();
+
+		try {
+
+			ResultSet rs = stmt.executeQuery("select * from menu1.reviews");
+
+			while (rs.next()) {
+
+				Vector in = new Vector<String>(); // 1개의 레코드 저장하는 벡터 생성
+
+				String reviewId = rs.getString(1); // 데이터베이스에서 번호값 가지고 와서 reviewId 변수에 저장
+
+				String menuId = rs.getString(2); // 데이터베이스에서 이름값 가지고 와서 menuId 변수에 저장
+
+				String review = rs.getString(3); // 데이터베이스에서 주소값 가지고 와서 review 변수에 저장
+
+				String recommend = rs.getString(4);
+
+				// 벡터에 각각의 값 추가
+
+				in.add(reviewId);
+
+				in.add(menuId);
+
+				in.add(review);
+
+				in.add(recommend);
+
+				// 전체 데이터를 저장하는 벡터에 in(1명의 데이터 저장) 벡터 추가
+
+				data.add(in);
+
+			}
+
+		} catch (Exception e) {
+
+			e.printStackTrace();
+		}
+		return data; // 전체 데이터 저장하는 data 벡터 리턴
+	}
+
+	private void insert(String reviewId, String menuId, String review) {
+
+		try {
+
+			// PreparedStatement 생성-> conn은 preDbTreatment() 메소드를 통해 생성되어 있음
+
+			pstmtAdd = conn.prepareStatement("insert into menu1.reviews values(?,?,?)");
+
+			// insert into member values(? -> 1 ,? -> 2, ? -> 3)" 각각의 ? 에 값 대입
+
+			pstmtAdd.setString(1, reviewId);
+
+			pstmtAdd.setString(2, menuId);
+
+			pstmtAdd.setString(3, review);
+
+			// 대입받은 쿼리를 실행 -> 입력 (insert)
+
+			pstmtAdd.executeUpdate();
+
+		} catch (Exception e) {
+
+			e.printStackTrace();
+
+		}
+	}
+
+	private void update(String menuId, String review, String reviewId) {
+
+		try {
+
+			// PreparedStatement 생성-> conn은 preDbTreatment() 메소드를 통해 생성되어 있음
+
+			pstmtUpdate = conn.prepareStatement("update menu1.reviews set menuId = ?, review = ? where reviewId = ?");
+
+			// 값 대입
+
+			pstmtUpdate.setString(1, menuId);
+
+			pstmtUpdate.setString(2, review);
+
+			// ? 순서 중요 확인 필요함
+
+			pstmtUpdate.setString(3, reviewId);
+
+			// 쿼리 실행
+
+			pstmtUpdate.executeUpdate();
+
+		} catch (Exception e) {
+
+			e.printStackTrace();
+
+		}
+	}
+
+	private void preDbTreatment() {
+
+		try {
+
+			Class.forName("com.mysql.cj.jdbc.Driver");
+
+			conn = DriverManager.getConnection(Url, user, password);
+
+			stmt = conn.createStatement();
+
+		} catch (Exception e) {
+
+			e.printStackTrace();
+
+		}
+	}
+
+	public static void main(String[] args) {
+
+		JdbcVectorTableEvnetSample frame = new JdbcVectorTableEvnetSample();
+
+	}
 }
