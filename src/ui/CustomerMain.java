@@ -62,12 +62,6 @@ public class CustomerMain extends JFrame {
 		//tabPane.setLayout(null);
 
 
-		//ÇÕ°è °è»ê
-		//		for (int index = 0; index < table.getRowCount(); index++) {
-		//			if(table.getValueAt(index, 2)!=null) {
-		//			sum1 += Integer.valueOf((String)table.getValueAt(index, 2));
-		//		}}
-
 		JLabel sum=new JLabel("ÇÕ°è:"+sum1+"¿ø");
 		sum.setBounds(730,400,200,70);
 		sum.setFont(new Font("³ª´®°íµñ",Font.BOLD,30));
@@ -86,7 +80,6 @@ public class CustomerMain extends JFrame {
 		//½Ò±¹¼öÅÇ
 		JPanel vietnamNoodle=new JPanel();
 		vietnamNoodle.setLayout(new GridLayout(0,3,3,3));
-
 
 		JPanel vNoodle_01=new JPanel();
 		vietnamNoodle.add(vNoodle_01);
@@ -123,10 +116,11 @@ public class CustomerMain extends JFrame {
 
 		//ÁÁ¾Æ¿ä
 		final JButton likes01 = new JButton("¢¾("+clicked+")");
-		likes01.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent ae) {
-				clicked++;
-				likes01.setText("¢¾("+clicked+")");
+		likes01.addActionListener( new AbstractAction("¸®ºä") {
+			@Override
+			public void actionPerformed( ActionEvent e ) {
+				new JdbcVectorTableEvnetSample();
+				groundPane.setVisible(true);
 			}
 		});
 		likes01.setSize(100,50);
@@ -472,8 +466,6 @@ public class CustomerMain extends JFrame {
 		table.getColumnModel().getColumn(3).setPreferredWidth(50);
 		table.setRowHeight(50);
 
-
-
 		JPanel tablePanel = new JPanel();
 		tablePanel.setBounds(730,54,240,360);
 		groundPane.add(tablePanel);
@@ -496,7 +488,7 @@ public class CustomerMain extends JFrame {
 			@Override
 			public void actionPerformed( ActionEvent e ) {
 				new Order();
-				groundPane.setVisible(false);
+				groundPane.setVisible(true);
 			}
 		});
 		groundPane.add(next1);
