@@ -34,14 +34,14 @@ public class CustomerMain extends JFrame {
 	JTable table;
 	JLabel sum;
 	int sum1 = 0;
-	int clicked = 70;
+	int clicked = 5;
 	int clicked02 = 15;
 	int clicked03 = 0;
-	int clicked04 = 46;
+	int clicked04 = 20;
 	int clicked05 = 5;
-	int clicked06 = 10;
-	int clicked07 = 13;
-	int clicked08 = 76;
+	int clicked06 = 0;
+	int clicked07 = 10;
+	int clicked08 = 20;
 	private PreparedStatement pstmtDel = null;
 
 	public CustomerMain() {
@@ -165,7 +165,7 @@ public class CustomerMain extends JFrame {
 		vNoodle_02.add(btnAdd02, BorderLayout.SOUTH);
 
 		// 좋아요
-		final JButton likes02 = new JButton("♥(" + clicked02 + ")");
+		final JButton likes02 = new JButton("♥(" + clicked02 + "+)");
 		likes02.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent ae) {
 				clicked02++;
@@ -211,7 +211,7 @@ public class CustomerMain extends JFrame {
 		vNoodle_03.add(btnAdd03, BorderLayout.SOUTH);
 
 		// 좋아요
-		final JButton likes03 = new JButton("♥(" + clicked03 + ")");
+		final JButton likes03 = new JButton("♥(" + clicked03 + "+)");
 		likes03.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent ae) {
 				clicked03++;
@@ -254,7 +254,7 @@ public class CustomerMain extends JFrame {
 			}
 		});
 		vNoodle_04.add(btnAdd4, BorderLayout.SOUTH);
-		vNoodle_04.add(new JButton("♥(90)"), BorderLayout.SOUTH);
+		vNoodle_04.add(new JButton("♥(10+)"), BorderLayout.SOUTH);
 		vNoodle_04.setBackground(new Color(255, 255, 255, 100));
 
 		tabPane.addTab("베트남 골목식당", vietnamNoodle);
@@ -298,11 +298,11 @@ public class CustomerMain extends JFrame {
 		tree01.add(btnAdd05);
 
 		// 좋아요
-		final JButton likes05 = new JButton("♥(" + clicked05 + ")");
+		final JButton likes05 = new JButton("♥(" + clicked05 + "+)");
 		likes05.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent ae) {
 				clicked05++;
-				likes05.setText("♥(" + clicked05 + ")");
+				likes05.setText("♥(" + clicked05 + "+)");
 			}
 		});
 		likes05.setSize(100, 50);
@@ -344,7 +344,7 @@ public class CustomerMain extends JFrame {
 		tree02.add(btnAdd06, BorderLayout.SOUTH);
 
 		// 좋아요
-		final JButton likes06 = new JButton("♥(" + clicked06 + ")");
+		final JButton likes06 = new JButton("♥(" + clicked06 + "+)");
 		likes06.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent ae) {
 				clicked06++;
@@ -391,7 +391,7 @@ public class CustomerMain extends JFrame {
 		tree03.add(btnAdd07, BorderLayout.SOUTH);
 
 		// 좋아요
-		final JButton likes07 = new JButton("♥(" + clicked07 + ")");
+		final JButton likes07 = new JButton("♥(" + clicked07 + "+)");
 		likes07.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent ae) {
 				clicked07++;
@@ -438,7 +438,7 @@ public class CustomerMain extends JFrame {
 		tree04.add(btnAdd08, BorderLayout.SOUTH);
 
 		// 좋아요
-		final JButton likes08 = new JButton("♥(" + clicked08 + ")");
+		final JButton likes08 = new JButton("♥(" + clicked08 + "+)");
 		likes08.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent ae) {
 				clicked08++;
@@ -470,6 +470,7 @@ public class CustomerMain extends JFrame {
 		JScrollPane scrollPane = new JScrollPane();
 		tablePanel.add(scrollPane);
 
+		// 장바구니 초기화 버튼
 		JButton clear = new JButton("초기화");
 		clear.addActionListener(new ActionListener() {
 
@@ -481,7 +482,24 @@ public class CustomerMain extends JFrame {
 
 		});
 		clear.setBounds(890, 10, 80, 40);
+		clear.setFont(new Font("나눔고딕", Font.BOLD, 15));
+		clear.setBackground(new Color(255, 255, 255, 250));
 		groundPane.add(clear);
+
+		// 회북이의 추천
+		JButton randomMenu = new JButton("회북아 골라줘!");
+		randomMenu.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				new RandomMenu();
+			}
+
+		});
+		randomMenu.setBounds(730, 10, 150, 40);
+		randomMenu.setFont(new Font("나눔고딕", Font.BOLD, 15));
+		randomMenu.setBackground(new Color(255, 255, 204));
+		groundPane.add(randomMenu);
 
 		tablePanel.add(table.getTableHeader(), BorderLayout.NORTH);
 		scrollPane.setViewportView(table);
