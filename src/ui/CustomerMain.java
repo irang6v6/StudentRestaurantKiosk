@@ -9,6 +9,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -41,6 +42,7 @@ public class CustomerMain extends JFrame {
 	int clicked06 = 10;
 	int clicked07 = 13;
 	int clicked08 = 76;
+	private PreparedStatement pstmtDel = null;
 
 	public CustomerMain() {
 		setTitle("학생식당 클라이언트 주문페이지");
@@ -468,19 +470,18 @@ public class CustomerMain extends JFrame {
 		JScrollPane scrollPane = new JScrollPane();
 		tablePanel.add(scrollPane);
 
-		tablePanel.addMouseListener(new MouseAdapter() {
-
-//						마우스 클릭시 처리를 담당하는 메소드 재정의
+		JButton clear = new JButton("초기화");
+		clear.addActionListener(new ActionListener() {
 
 			@Override
-
-			public void mouseClicked(MouseEvent e) {
-				if (e.getClickCount() == 2) {
-					model.deleteTable();
-				}
-
+			public void actionPerformed(ActionEvent e) {
+				dispose();
+				new CustomerMain();
 			}
+
 		});
+		clear.setBounds(890, 10, 80, 40);
+		groundPane.add(clear);
 
 		tablePanel.add(table.getTableHeader(), BorderLayout.NORTH);
 		scrollPane.setViewportView(table);
@@ -506,6 +507,14 @@ public class CustomerMain extends JFrame {
 
 	}
 
+	public void delete(String selectedId) throws SQLException {
+		Connection conn = makeConnection();
+		Statement stmt = conn.createStatement();
+		pstmtDel = conn.prepareStatement("delete from menu1.ordersheet where selectedId = ?");
+		pstmtDel.setString(1, selectedId);
+		pstmtDel.executeUpdate();
+	}
+
 	public class MyTableModel extends AbstractTableModel {
 		private String[] columnNames = { "주문", "상품명", "가격", "주문처" };
 		private static final int ROWS = 15;
@@ -515,6 +524,11 @@ public class CustomerMain extends JFrame {
 		@Override
 		public int getRowCount() {
 			return data.length;
+		}
+
+		public void addMouseListener(MouseAdapter mouseAdapter) {
+			// TODO Auto-generated method stub
+
 		}
 
 		@Override
