@@ -11,8 +11,10 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Statement;
+import java.util.Enumeration;
 import java.util.Vector;
 
+import javax.swing.AbstractButton;
 import javax.swing.ButtonGroup;
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -54,7 +56,7 @@ public class Review extends JFrame {
 	private PreparedStatement pstmtDel = null;
 	private PreparedStatement pstmtUpdate = null;
 
-	public Review() {
+	public Review(int selectedMenuId) {
 		{
 
 			setTitle("리뷰");
@@ -82,7 +84,7 @@ public class Review extends JFrame {
 
 			model = new DefaultTableModel();
 
-			Vector result = selectAll();
+			Vector result = selectAll(selectedMenuId);
 
 			// 모델에 변경된 데이터(result)를 새로 적용
 
@@ -100,7 +102,6 @@ public class Review extends JFrame {
 
 			// 값을 입력받거나 표시할 텍스트필드(번호, 이름, 주소) 생성
 
-			tfReviewId = new JTextField(8);
 
 			tfMenuId = new JTextField(10);
 
@@ -108,7 +109,6 @@ public class Review extends JFrame {
 
 			// 레이블 생성
 
-			lblReviewId = new JLabel("번호");
 
 			lblMenuId = new JLabel("메뉴");
 
@@ -119,6 +119,15 @@ public class Review extends JFrame {
 			btnAdd = new JButton("추가");
 
 			btnClear = new JButton("닫기");
+			
+			JRadioButton rb1 = new JRadioButton("강추");
+			JRadioButton rb2 = new JRadioButton("비추");
+
+			ButtonGroup bg = new ButtonGroup();
+			bg.add(rb1);
+			bg.add(rb2);
+			
+		
 
 			btnAdd.addActionListener(new ActionListener() {
 
@@ -132,19 +141,28 @@ public class Review extends JFrame {
 
 					// 현재 텍스트 필드에 있는 값을 각각의 변수에 대입
 
-					String reviewId = tfReviewId.getText(); // 번호
 
-					String menuId = tfMenuId.getText(); // 이름
+					int menuId = selectedMenuId; // 이름
 
 					String review = tfReview.getText(); // 주소
+					
+					Enumeration<AbstractButton> enums = bg.getElements();
+					String rc = null;
+					while(enums.hasMoreElements()) {            // hasMoreElements() Enum에 더 꺼낼 개체가 있는지 체크한다. 없으며 false 반환
+					    AbstractButton ab = enums.nextElement();    // 제네릭스가 AbstractButton 이니까 당연히 AbstractButton으로 받아야함
+					    JRadioButton jb = (JRadioButton)ab;         // 형변환. 물론 윗줄과 이줄을 합쳐서 바로 형변환 해서 받아도 된다.
+					 
+					    if(jb.isSelected())                         // 받아낸 라디오버튼의 체크 상태를 확인한다. 체크되었을경우 true 반환.
+					        rc = (jb.getText().trim()); //getText() 메소드로 문자열 받아낸다.
+					}
 
 					// 각각의 변수에 저장된 값을 데이터베이스에 Insert하는 메소드
 
-					insert(reviewId, menuId, review);
+					insert(menuId, review,rc);
 
 					// 신규 저장된 데이터를 데이터베이스에서 다시 읽어와서 result 벡터에 저장
 
-					Vector result = selectAll();
+					Vector result = selectAll(selectedMenuId);
 
 					// 변경된 데이터(벡터)로 모델 갱신 -> 테이블 표시 갱신됨
 
@@ -169,27 +187,20 @@ public class Review extends JFrame {
 
 			// 패널에 각각의 레이블과 텍스트필드 추가
 
-			panel.add(lblReviewId);
 
-			panel.add(tfReviewId);
 
-			panel.add(lblMenuId);
 
-			panel.add(tfMenuId);
 
 			panel.add(lblReview);
 
 			panel.add(tfReview);
 
-			JRadioButton rb1 = new JRadioButton("강추");
-			JRadioButton rb2 = new JRadioButton("비추");
-
-			ButtonGroup bg = new ButtonGroup();
-			bg.add(rb1);
-			bg.add(rb2);
-
+			
 			panel.add(rb1);
 			panel.add(rb2);
+			
+			
+
 
 			// 패널에 버튼 추가
 
@@ -240,13 +251,14 @@ public class Review extends JFrame {
 	}
 
 
-	private Vector selectAll() {
+	private Vector selectAll(int selectedMenuId) {
 
 		data.clear();
 
 		try {
 
-			ResultSet rs = stmt.executeQuery("select * from menu1.reviews");
+			
+			ResultSet rs = stmt.executeQuery("select * from menu1.reviews WHERE menuId='"+selectedMenuId+"'");
 
 			while (rs.next()) {
 
@@ -283,21 +295,21 @@ public class Review extends JFrame {
 		return data; // 전체 데이터 저장하는 data 벡터 리턴
 	}
 
-	private void insert(String reviewId, String menuId, String review) {
+	private void insert(int selectedMenuId, String review, String rc) {
 
 		try {
 
 			// PreparedStatement 생성-> conn은 preDbTreatment() 메소드를 통해 생성되어 있음
 
-			pstmtAdd = conn.prepareStatement("insert into menu1.reviews values(?,?,?)");
+			pstmtAdd = conn.prepareStatement("insert into menu1.reviews (menuId,review,likes) values(?,?,?)");
 
 			// insert into member values(? -> 1 ,? -> 2, ? -> 3)" 각각의 ? 에 값 대입
 
-			pstmtAdd.setString(1, reviewId);
+			pstmtAdd.setInt(1, selectedMenuId);
 
-			pstmtAdd.setString(2, menuId);
+			pstmtAdd.setString(2, review);
 
-			pstmtAdd.setString(3, review);
+			pstmtAdd.setString(3, rc);
 
 			// 대입받은 쿼리를 실행 -> 입력 (insert)
 
@@ -310,34 +322,34 @@ public class Review extends JFrame {
 		}
 	}
 
-	private void update(String menuId, String review, String reviewId) {
-
-		try {
-
-			// PreparedStatement 생성-> conn은 preDbTreatment() 메소드를 통해 생성되어 있음
-
-			pstmtUpdate = conn.prepareStatement("update menu1.reviews set menuId = ?, review = ? where reviewId = ?");
-
-			// 값 대입
-
-			pstmtUpdate.setString(1, menuId);
-
-			pstmtUpdate.setString(2, review);
-
-			// ? 순서 중요 확인 필요함
-
-			pstmtUpdate.setString(3, reviewId);
-
-			// 쿼리 실행
-
-			pstmtUpdate.executeUpdate();
-
-		} catch (Exception e) {
-
-			e.printStackTrace();
-
-		}
-	}
+//	private void update(String menuId, String review, String reviewId) {
+//
+//		try {
+//
+//			// PreparedStatement 생성-> conn은 preDbTreatment() 메소드를 통해 생성되어 있음
+//
+//			pstmtUpdate = conn.prepareStatement("update menu1.reviews set menuId = ?, review = ? where reviewId = ?");
+//
+//			// 값 대입
+//
+//			pstmtUpdate.setString(1, menuId);
+//
+//			pstmtUpdate.setString(2, review);
+//
+//			// ? 순서 중요 확인 필요함
+//
+//			pstmtUpdate.setString(3, reviewId);
+//
+//			// 쿼리 실행
+//
+//			pstmtUpdate.executeUpdate();
+//
+//		} catch (Exception e) {
+//
+//			e.printStackTrace();
+//
+//		}
+//	}
 
 	private void preDbTreatment() {
 
