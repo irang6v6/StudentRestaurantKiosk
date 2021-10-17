@@ -12,6 +12,7 @@ import javax.swing.JPanel;
 
 public class Order extends JFrame {
 	JPanel groundPane2=new JPanel();
+	String orderNum="714";
 	public Order(){
 	setTitle("주문서");
 	setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -24,6 +25,15 @@ public class Order extends JFrame {
 	groundPane2.setLayout(null);
 	
 	
+	JLabel label1=new JLabel("주문번호");
+	label1.setBounds(460,150,400,30);
+	label1.setFont(new Font("나눔고딕",Font.BOLD,20));
+	groundPane2.add(label1);
+	
+	JLabel num=new JLabel(orderNum);
+	num.setBounds(450,200,400,60);
+	num.setFont(new Font("나눔고딕",Font.BOLD,60));
+	groundPane2.add(num);
 	
 	JLabel sum=new JLabel("결제가 완료되었습니다.");
 	sum.setBounds(350,300,400,30);

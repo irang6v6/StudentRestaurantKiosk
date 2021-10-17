@@ -45,7 +45,7 @@ public class CustomerMain extends JFrame {
 	private PreparedStatement pstmtDel = null;
 
 	public CustomerMain() {
-		setTitle("학생식당 클라이언트 주문페이지");
+		setTitle("학식 2.0");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setResizable(false);
 
@@ -166,10 +166,11 @@ public class CustomerMain extends JFrame {
 
 		// 좋아요
 		final JButton likes02 = new JButton("♥(" + clicked02 + "+)");
-		likes02.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent ae) {
-				clicked02++;
-				likes02.setText("♥(" + clicked02 + ")");
+		likes02.addActionListener(new AbstractAction("리뷰") {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				new Review(2);
+				groundPane.setVisible(true);
 			}
 		});
 		likes02.setSize(100, 50);
@@ -591,25 +592,7 @@ public class CustomerMain extends JFrame {
 			fireTableDataChanged();
 		}
 
-		public void deleteTable() {
-			int index = table.getSelectedRow();
-			Vector in = (Vector) data[index][0];
-			String selectedId = (String) in.get(0);
-
-			try {
-				Connection conn = makeConnection();
-				Statement stmt = conn.createStatement();
-				ResultSet rs = stmt.executeQuery("delete FROM menu1.ordersheet where selectedId = " + selectedId + "");
-
-				conn.close();
-			} catch (SQLException e) {
-				System.err.println("Caught Exception:" + e.getMessage());
-			}
-
-			fillTable();
-
-		}
-
+		
 		public void setValueAt(Object value, int row, int col) {
 			data[row][col] = value;
 			fireTableCellUpdated(row, col);
@@ -641,7 +624,6 @@ public class CustomerMain extends JFrame {
 		return con;
 	}
 
-	// 이유를 모르겠지만 버튼 변수명이 인식이 안돼서 보류..ㅠㅠ
 	class MyListener implements ActionListener {
 
 		@Override
