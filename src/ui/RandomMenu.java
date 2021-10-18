@@ -73,7 +73,7 @@ public class RandomMenu extends JFrame {
 				);
 		
 		
-		JButton btnClose = new JButton("´Ý±â");
+		JButton btnClose = new JButton("¸¾¿¡ µé¾î");
 		btnClose.addActionListener(new ActionListener() {
 
 			@Override
@@ -86,9 +86,9 @@ public class RandomMenu extends JFrame {
 		result.setBounds(550,100,200,40);
 		imageLabel.setBounds(700, 50, 200, 250);
 		foodLabel.setBounds(325, 150, 350, 350);
-		btnRetry.setBounds(350, 550, 150, 40);
+		btnRetry.setBounds(320, 550, 150, 40);
 		btnRetry.setFont(new Font("³ª´®°íµñ", Font.BOLD, 20));
-		btnClose.setBounds(550, 550, 80, 40);
+		btnClose.setBounds(520, 550, 150, 40);
 		btnClose.setFont(new Font("³ª´®°íµñ", Font.BOLD, 20));
 	
 		panel.add(ment);
