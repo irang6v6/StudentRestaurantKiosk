@@ -66,6 +66,7 @@ public class Review extends JFrame {
 			setTitle("¸®ºä");
 			setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 			setResizable(false);
+			setLocation(400,250);
 
 			preDbTreatment();
 
