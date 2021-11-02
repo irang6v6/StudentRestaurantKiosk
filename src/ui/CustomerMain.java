@@ -20,6 +20,7 @@ import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
@@ -48,6 +49,7 @@ public class CustomerMain extends JFrame {
 		setTitle("학식 2.0");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setResizable(false);
+		setLocation(400, 200);
 
 		// 최하위
 		groundPane = new JPanel();
@@ -71,6 +73,25 @@ public class CustomerMain extends JFrame {
 		sum.setFont(new Font("나눔고딕", Font.BOLD, 30));
 
 		groundPane.add(sum);
+
+		// 다음단계 버튼
+		JButton next1 = new JButton(new AbstractAction("결제") {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if (sum1 != 0) {
+					new Order(sum1);
+					groundPane.setVisible(true);
+				} else {
+					// 합계 0원일시 오류 반환
+					JOptionPane.showMessageDialog(null, "장바구니에 메뉴를 담아주세요", "결제 오류", JOptionPane.ERROR_MESSAGE);
+				}
+			}
+		});
+		groundPane.add(next1);
+		next1.setFont(new Font("나눔고딕", Font.BOLD, 50));
+		next1.setBounds(730, 470, 240, 170);
+		next1.setBackground(new Color(255, 255, 255, 250));
+		next1.addActionListener(new MyListener());
 
 		// 배열로 이미지추가
 		ImageIcon[] menu = new ImageIcon[8];
@@ -212,11 +233,12 @@ public class CustomerMain extends JFrame {
 		vNoodle_03.add(btnAdd03, BorderLayout.SOUTH);
 
 		// 좋아요
-		final JButton likes03 = new JButton("♥(" + clicked03 + "+)");
-		likes03.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent ae) {
-				clicked03++;
-				likes03.setText("♥(" + clicked03 + ")");
+		final JButton likes03 = new JButton("♥(10+)");
+		likes03.addActionListener(new AbstractAction("리뷰") {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				new Review(3);
+				groundPane.setVisible(true);
 			}
 		});
 		likes03.setSize(100, 50);
@@ -255,7 +277,17 @@ public class CustomerMain extends JFrame {
 			}
 		});
 		vNoodle_04.add(btnAdd4, BorderLayout.SOUTH);
-		vNoodle_04.add(new JButton("♥(10+)"), BorderLayout.SOUTH);
+		final JButton likes04 = new JButton("♥(0+)");
+		likes04.addActionListener(new AbstractAction("리뷰") {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				new Review(4);
+				groundPane.setVisible(true);
+			}
+		});
+		likes04.setSize(100, 50);
+		likes04.setFont(new Font("나눔고딕", Font.BOLD, 15));
+		vNoodle_04.add(likes04, BorderLayout.SOUTH);
 		vNoodle_04.setBackground(new Color(255, 255, 255, 100));
 
 		tabPane.addTab("베트남 골목식당", vietnamNoodle);
@@ -299,11 +331,12 @@ public class CustomerMain extends JFrame {
 		tree01.add(btnAdd05);
 
 		// 좋아요
-		final JButton likes05 = new JButton("♥(" + clicked05 + "+)");
-		likes05.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent ae) {
-				clicked05++;
-				likes05.setText("♥(" + clicked05 + "+)");
+		final JButton likes05 = new JButton("♥(0+)");
+		likes05.addActionListener(new AbstractAction("리뷰") {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				new Review(5);
+				groundPane.setVisible(true);
 			}
 		});
 		likes05.setSize(100, 50);
@@ -347,10 +380,12 @@ public class CustomerMain extends JFrame {
 		// 좋아요
 		final JButton likes06 = new JButton("♥(" + clicked06 + "+)");
 		likes06.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent ae) {
-				clicked06++;
-				likes06.setText("♥(" + clicked06 + ")");
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				new Review(6);
+				groundPane.setVisible(true);
 			}
+
 		});
 		likes06.setSize(100, 50);
 		likes06.setFont(new Font("나눔고딕", Font.BOLD, 15));
@@ -394,9 +429,10 @@ public class CustomerMain extends JFrame {
 		// 좋아요
 		final JButton likes07 = new JButton("♥(" + clicked07 + "+)");
 		likes07.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent ae) {
-				clicked07++;
-				likes07.setText("♥(" + clicked07 + ")");
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				new Review(7);
+				groundPane.setVisible(true);
 			}
 		});
 		likes07.setSize(100, 50);
@@ -441,9 +477,10 @@ public class CustomerMain extends JFrame {
 		// 좋아요
 		final JButton likes08 = new JButton("♥(" + clicked08 + "+)");
 		likes08.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent ae) {
-				clicked08++;
-				likes08.setText("♥(" + clicked08 + ")");
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				new Review(8);
+				groundPane.setVisible(true);
 			}
 		});
 		likes08.setSize(100, 50);
@@ -507,20 +544,6 @@ public class CustomerMain extends JFrame {
 
 		tablePanel.setFont(new Font("나눔고딕", Font.PLAIN, 14));
 		tablePanel.setBackground(new Color(255, 255, 255, 100));
-
-		// 다음단계 버튼
-		JButton next1 = new JButton(new AbstractAction("결제") {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				new Order();
-				groundPane.setVisible(true);
-			}
-		});
-		groundPane.add(next1);
-		next1.setFont(new Font("나눔고딕", Font.BOLD, 50));
-		next1.setBounds(730, 470, 240, 170);
-		next1.setBackground(new Color(255, 255, 255, 250));
-		next1.addActionListener(new MyListener());
 
 		setVisible(true);
 
@@ -592,7 +615,6 @@ public class CustomerMain extends JFrame {
 			fireTableDataChanged();
 		}
 
-		
 		public void setValueAt(Object value, int row, int col) {
 			data[row][col] = value;
 			fireTableCellUpdated(row, col);
