@@ -13,10 +13,12 @@ import javax.swing.JPanel;
 public class Order extends JFrame {
 	JPanel groundPane2=new JPanel();
 	String orderNum="714";
-	public Order(){
+	public Order(int payment){
 	setTitle("주문서");
 	setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 	setResizable(false);
+	setLocation(400,200);
+
 	
 	//최하위
 	groundPane2=new JPanel();
@@ -26,19 +28,27 @@ public class Order extends JFrame {
 	
 	
 	JLabel label1=new JLabel("주문번호");
-	label1.setBounds(460,150,400,30);
-	label1.setFont(new Font("나눔고딕",Font.BOLD,20));
+	label1.setBounds(450,150,400,30);
+	label1.setFont(new Font("나눔고딕",Font.BOLD,30));
 	groundPane2.add(label1);
 	
 	JLabel num=new JLabel(orderNum);
-	num.setBounds(450,200,400,60);
+	num.setBounds(450,200,110,60);
+	num.setBorder(javax.swing.BorderFactory.createLineBorder(new Color(0, 0, 0)));
 	num.setFont(new Font("나눔고딕",Font.BOLD,60));
+	num.setOpaque(true);
+	num.setBackground(Color.white);
 	groundPane2.add(num);
 	
-	JLabel sum=new JLabel("결제가 완료되었습니다.");
-	sum.setBounds(350,300,400,30);
+	JLabel sum=new JLabel(payment+"원 결제가 완료되었습니다.");
+	sum.setBounds(330,300,500,30);
 	sum.setFont(new Font("나눔고딕",Font.BOLD,30));
 	groundPane2.add(sum);
+	
+	JLabel ending=new JLabel("맛있게 드세요!");
+	ending.setBounds(420,340,500,30);
+	ending.setFont(new Font("나눔고딕",Font.BOLD,30));
+	groundPane2.add(ending);
 	
 	
 	JButton button1 = new JButton("확인");
@@ -57,8 +67,9 @@ public class Order extends JFrame {
 	setSize(1000,700);
 	setVisible(true);
 	}
+	
 	public static void main(String[] args) {
-		Order orderList=new Order();
+		Order orderList=new Order(0);
 	
 	}
 }
