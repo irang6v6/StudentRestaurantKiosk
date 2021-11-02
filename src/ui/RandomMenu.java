@@ -25,6 +25,9 @@ public class RandomMenu extends JFrame {
 		setTitle("오늘의 메뉴는...");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setResizable(false);
+		setLocation(400,200);
+
+		
 		JPanel panel = new JPanel();
 		panel.setLayout(null);
 
